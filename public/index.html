@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demostración SOLID - Principios de Programación</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.6);
+            transform: translateY(-2px);
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .principle-card {
+            background: #f8f9fa;
+            border-left: 5px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .principle-card h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-example {
+            background: #2d3748;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .code-example pre {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .file-path {
+            background: #4a5568;
+            color: #e2e8f0;
+            padding: 8px 15px;
+            border-radius: 5px 5px 0 0;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .explanation {
+            background: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .explanation h4 {
+            color: #2d5a2d;
+            margin-bottom: 10px;
+        }
+
+        .step-counter {
+            background: #007bff;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .demo-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .demo-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+
+        .demo-btn:hover {
+            background: #218838;
+        }
+
+        .api-result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            height: 4px;
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #28a745;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .icon {
+            margin-right: 8px;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-btn {
+                width: 200px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-code"></i> Principios SOLID</h1>
+            <p>Demostración interactiva con ejemplos prácticos del proyecto</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn active" onclick="showSection('intro')">🏠 Introducción</button>
+            <button class="nav-btn" onclick="showSection('srp')">S - SRP</button>
+            <button class="nav-btn" onclick="showSection('ocp')">O - OCP</button>
+            <button class="nav-btn" onclick="showSection('lsp')">L - LSP</button>
+            <button class="nav-btn" onclick="showSection('isp')">I - ISP</button>
+            <button class="nav-btn" onclick="showSection('dip')">D - DIP</button>
+            <button class="nav-btn" onclick="showSection('cohesion')">🔗 Cohesión</button>
+            <button class="nav-btn" onclick="showSection('coupling')">🔀 Acoplamiento</button>
+            <button class="nav-btn" onclick="showSection('di')">💉 Inyección DI</button>
+            <button class="nav-btn" onclick="showSection('demo')">🚀 Demo API</button>
+        </div>
+
+        <!-- Introducción -->
+        <div id="intro" class="content-section active">
+            <h2><i class="fas fa-home icon"></i>Bienvenido a la Demostración SOLID</h2>
+            <p>Este proyecto demuestra los <strong>principios SOLID</strong>, <strong>cohesión</strong>, <strong>acoplamiento</strong> e <strong>inyección de dependencias</strong> usando Node.js, Express y TypeScript.</p>
+            
+            <div class="principle-card">
+                <h3><i class="fas fa-lightbulb icon"></i>¿Qué son los principios SOLID?</h3>
+                <p>SOLID es un acrónimo que representa cinco principios fundamentales de la programación orientada a objetos:</p>
+                <ul style="margin: 15px 0 0 20px;">
+                    <li><strong>S</strong> - Single Responsibility Principle (Principio de Responsabilidad Única)</li>
+                    <li><strong>O</strong> - Open/Closed Principle (Principio Abierto/Cerrado)</li>
+                    <li><strong>L</strong> - Liskov Substitution Principle (Principio de Sustitución de Liskov)</li>
+                    <li><strong>I</strong> - Interface Segregation Principle (Principio de Segregación de Interfaces)</li>
+                    <li><strong>D</strong> - Dependency Inversion Principle (Principio de Inversión de Dependencias)</li>
+                </ul>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-info-circle icon"></i>Estructura del Proyecto</h4>
+                <p>Nuestro proyecto está organizado siguiendo estos principios:</p>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><code>src/interfaces/</code> - Definiciones de contratos (ISP, DIP)</li>
+                    <li><code>src/models/</code> - Entidades de dominio (SRP)</li>
+                    <li><code>src/services/</code> - Lógica de negocio (SRP, OCP)</li>
+                    <li><code>src/repositories/</code> - Capa de persistencia (DIP)</li>
+                    <li><code>src/controllers/</code> - Controladores HTTP (SRP)</li>
+                    <li><code>src/container/</code> - Inyección de dependencias</li>
+                </ul>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-play icon"></i>Navegación</h4>
+                <p>Usa los botones de arriba para explorar cada principio con ejemplos de código real del proyecto.</p>
+                <button class="demo-btn" onclick="showSection('srp')">Comenzar con SRP →</button>
+            </div>
+        </div>
+
+        <!-- SRP - Single Responsibility Principle -->
+        <div id="srp" class="content-section">
+            <h2><span class="step-counter">S</span>Single Responsibility Principle (SRP)</h2>
+            <p><strong>"Una clase debe tener una sola razón para cambiar"</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-target icon"></i>¿Qué significa SRP?</h3>
+                <p>Cada clase debe tener una única responsabilidad y una sola razón para cambiar. Esto hace el código más mantenible y testeable.</p>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-check-circle icon"></i>Ejemplo: Clase User</h4>
+                <p>Nuestra clase <code>User</code> solo se encarga de representar y validar datos de usuario:</p>
+            </div>
+
+            <div class="file-path">📁 src/models/User.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">export class User implements IUser {
+  constructor(
+    public readonly id: string,
+    public email: string,
+    public name: string,
+    public readonly createdAt: Date = new Date()
+  ) {
+    this.validateEmail();
+    this.validateName();
+  }
+
+  // ✅ SRP: Solo validación de email
+  private validateEmail(): void {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      throw new Error('Email inválido');
+    }
+  }
+
+  // ✅ SRP: Solo validación de nombre
+  private validateName(): void {
+    if (!this.name || this.name.trim().length < 2) {
+      throw new Error('El nombre debe tener al menos 2 caracteres');
+    }
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb icon"></i>Otros ejemplos de SRP en el proyecto:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><code>BcryptPasswordHasher</code> - Solo hash de contraseñas</li>
+                    <li><code>JwtTokenService</code> - Solo manejo de tokens JWT</li>
+                    <li><code>UserController</code> - Solo manejo de requests HTTP</li>
+                </ul>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-code icon"></i>Beneficios del SRP:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ Código más fácil de entender</li>
+                    <li>✅ Más fácil de testear</li>
+                    <li>✅ Menos acoplamiento</li>
+                    <li>✅ Más reutilizable</li>
+                </ul>
+                <button class="demo-btn" onclick="showSection('ocp')">Siguiente: OCP →</button>
+            </div>
+        </div>
+
+        <!-- OCP - Open/Closed Principle -->
+        <div id="ocp" class="content-section">
+            <h2><span class="step-counter">O</span>Open/Closed Principle (OCP)</h2>
+            <p><strong>"Las entidades de software deben estar abiertas para extensión, pero cerradas para modificación"</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-expand-arrows-alt icon"></i>¿Qué significa OCP?</h3>
+                <p>Debes poder extender el comportamiento de una clase sin modificar su código existente. Esto se logra usando interfaces y herencia.</p>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-check-circle icon"></i>Ejemplo: Interface IPasswordHasher</h4>
+                <p>Podemos agregar nuevos algoritmos de hash sin modificar código existente:</p>
+            </div>
+
+            <div class="file-path">📁 src/interfaces/IRepository.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ OCP: Interface abierta para extensión
+export interface IPasswordHasher {
+  hash(password: string): Promise&lt;string&gt;;
+  compare(password: string, hash: string): Promise&lt;boolean&gt;;
+}
+
+// Implementación actual
+export class BcryptPasswordHasher implements IPasswordHasher {
+  async hash(password: string): Promise&lt;string&gt; {
+    return bcrypt.hash(password, 12);
+  }
+  
+  async compare(password: string, hash: string): Promise&lt;boolean&gt; {
+    return bcrypt.compare(password, hash);
+  }
+}
+
+// ✅ Nueva implementación sin modificar código existente
+export class Argon2PasswordHasher implements IPasswordHasher {
+  async hash(password: string): Promise&lt;string&gt; {
+    // Implementación con Argon2
+    return argon2.hash(password);
+  }
+  
+  async compare(password: string, hash: string): Promise&lt;boolean&gt; {
+    return argon2.verify(hash, password);
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb icon"></i>Más ejemplos de OCP:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><code>IUserRepository</code> - Podemos agregar MongoDB, PostgreSQL, etc.</li>
+                    <li><code>ITokenService</code> - Podemos usar JWT, OAuth, etc.</li>
+                    <li>Middleware - Podemos agregar nuevos middleware sin modificar existentes</li>
+                </ul>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-plus icon"></i>Beneficios del OCP:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ Extensibilidad sin riesgo</li>
+                    <li>✅ Código estable y confiable</li>
+                    <li>✅ Facilita el testing</li>
+                    <li>✅ Reduce bugs en código existente</li>
+                </ul>
+                <button class="demo-btn" onclick="showSection('lsp')">Siguiente: LSP →</button>
+            </div>
+        </div>
+
+        <!-- LSP - Liskov Substitution Principle -->
+        <div id="lsp" class="content-section">
+            <h2><span class="step-counter">L</span>Liskov Substitution Principle (LSP)</h2>
+            <p><strong>"Los objetos de una superclase deben ser reemplazables por objetos de sus subclases sin alterar el funcionamiento del programa"</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-exchange-alt icon"></i>¿Qué significa LSP?</h3>
+                <p>Las implementaciones de una interface deben ser intercambiables sin romper la funcionalidad.</p>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-check-circle icon"></i>Ejemplo: Implementaciones de IUserRepository</h4>
+                <p>Cualquier implementación de <code>IUserRepository</code> debe funcionar igual:</p>
+            </div>
+
+            <div class="file-path">📁 src/services/UserService.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">export class UserService {
+  constructor(
+    private userRepository: IUserRepository, // ✅ LSP: Acepta cualquier implementación
+    private passwordHasher: IPasswordHasher,
+    private tokenService: ITokenService
+  ) {}
+
+  async createUser(userData: ICreateUser): Promise&lt;User&gt; {
+    // ✅ LSP: Funciona con InMemoryUserRepository, PostgreSQLUserRepository, etc.
+    const existingUser = await this.userRepository.findByEmail(userData.email);
+    
+    if (existingUser) {
+      throw new Error('El usuario ya existe');
+    }
+
+    const hashedPassword = await this.passwordHasher.hash(userData.password);
+    
+    return this.userRepository.create({
+      ...userData,
+      passwordHash: hashedPassword
+    });
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb icon"></i>Implementaciones intercambiables:</h4>
+            </div>
+
+            <div class="file-path">📁 src/repositories/InMemoryUserRepository.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ LSP: Implementación en memoria
+export class InMemoryUserRepository implements IUserRepository {
+  private users: Map&lt;string, User&gt; = new Map();
+
+  async findByEmail(email: string): Promise&lt;User | null&gt; {
+    for (const user of this.users.values()) {
+      if (user.email === email) return user;
+    }
+    return null;
+  }
+}
+
+// ✅ LSP: Implementación con base de datos (ejemplo)
+export class PostgreSQLUserRepository implements IUserRepository {
+  async findByEmail(email: string): Promise&lt;User | null&gt; {
+    const result = await this.db.query('SELECT * FROM users WHERE email = $1', [email]);
+    return result.rows[0] ? new User(...result.rows[0]) : null;
+  }
+}</code></pre>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-sync icon"></i>Beneficios del LSP:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ Intercambiabilidad garantizada</li>
+                    <li>✅ Polimorfismo confiable</li>
+                    <li>✅ Testing más fácil (mocks)</li>
+                    <li>✅ Flexibilidad en implementaciones</li>
+                </ul>
+                <button class="demo-btn" onclick="showSection('isp')">Siguiente: ISP →</button>
+            </div>
+        </div>
+
+        <!-- ISP - Interface Segregation Principle -->
+        <div id="isp" class="content-section">
+            <h2><span class="step-counter">I</span>Interface Segregation Principle (ISP)</h2>
+            <p><strong>"Los clientes no deben depender de interfaces que no usan"</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-puzzle-piece icon"></i>¿Qué significa ISP?</h3>
+                <p>Es mejor tener muchas interfaces específicas que una interface grande y general.</p>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-check-circle icon"></i>Ejemplo: Interfaces segregadas para User</h4>
+                <p>En lugar de una interface gigante, tenemos interfaces específicas:</p>
+            </div>
+
+            <div class="file-path">📁 src/interfaces/IUser.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ ISP: Interface básica para datos de usuario
+export interface IUser {
+  id: string;
+  email: string;
+  name: string;
+  createdAt: Date;
+}
+
+// ✅ ISP: Interface específica para autenticación
+export interface IUserAuth {
+  email: string;
+  passwordHash: string;
+}
+
+// ✅ ISP: Interface específica para creación
+export interface ICreateUser {
+  email: string;
+  name: string;
+  password: string;
+  passwordHash?: string;
+}
+
+// ✅ ISP: Interface específica para actualización
+export interface IUpdateUser {
+  email?: string;
+  name?: string;
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="times icon"></i>❌ Violación del ISP (ejemplo de lo que NO hacer):</h4>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-typescript">// ❌ ISP Violado: Interface demasiado grande
+interface IUserEverything {
+  // Datos básicos
+  id: string;
+  email: string;
+  name: string;
+  
+  // Autenticación
+  passwordHash: string;
+  login(password: string): boolean;
+  
+  // Persistencia
+  save(): void;
+  delete(): void;
+  
+  // Notificaciones
+  sendEmail(message: string): void;
+  sendSMS(message: string): void;
+  
+  // Reportes
+  generateReport(): string;
+  exportToPDF(): Buffer;
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-lightbulb icon"></i>Más ejemplos de ISP en el proyecto:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><code>IPasswordHasher</code> - Solo hash de contraseñas</li>
+                    <li><code>ITokenService</code> - Solo manejo de tokens</li>
+                    <li><code>IUserRepository</code> - Solo operaciones de persistencia</li>
+                </ul>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-cut icon"></i>Beneficios del ISP:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ Interfaces más cohesivas</li>
+                    <li>✅ Menos dependencias innecesarias</li>
+                    <li>✅ Más fácil de implementar</li>
+                    <li>✅ Mejor testabilidad</li>
+                </ul>
+                <button class="demo-btn" onclick="showSection('dip')">Siguiente: DIP →</button>
+            </div>
+        </div>
+
+        <!-- DIP - Dependency Inversion Principle -->
+        <div id="dip" class="content-section">
+            <h2><span class="step-counter">D</span>Dependency Inversion Principle (DIP)</h2>
+            <p><strong>"Depende de abstracciones, no de concreciones"</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-layer-group icon"></i>¿Qué significa DIP?</h3>
+                <p>Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones.</p>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="times icon"></i>❌ Sin DIP (ejemplo de lo que NO hacer):</h4>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-typescript">// ❌ DIP Violado: Dependencia directa de implementaciones
+export class UserService {
+  private userRepository: InMemoryUserRepository; // ❌ Dependencia concreta
+  private passwordHasher: BcryptPasswordHasher;   // ❌ Dependencia concreta
+  
+  constructor() {
+    this.userRepository = new InMemoryUserRepository(); // ❌ Acoplamiento fuerte
+    this.passwordHasher = new BcryptPasswordHasher();   // ❌ Acoplamiento fuerte
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="check-circle icon"></i>✅ Con DIP (nuestro proyecto):</h4>
+            </div>
+
+            <div class="file-path">📁 src/services/UserService.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ DIP: Dependencias de abstracciones
+export class UserService {
+  constructor(
+    private userRepository: IUserRepository,    // ✅ Abstracción
+    private passwordHasher: IPasswordHasher,    // ✅ Abstracción
+    private tokenService: ITokenService         // ✅ Abstracción
+  ) {}
+
+  async authenticateUser(email: string, password: string): Promise&lt;string&gt; {
+    // ✅ Usa abstracciones, no implementaciones específicas
+    const user = await this.userRepository.findByEmail(email);
+    
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+
+    const userAuth = await this.userRepository.findAuthByEmail(email);
+    const isValid = await this.passwordHasher.compare(password, userAuth!.passwordHash);
+    
+    if (!isValid) {
+      throw new Error('Contraseña incorrecta');
+    }
+
+    return this.tokenService.generateToken({ userId: user.id, email: user.email });
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="check-circle icon"></i>Inyección de dependencias con contenedor:</h4>
+            </div>
+
+            <div class="file-path">📁 src/container/DIContainer.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ DIP: Contenedor resuelve dependencias
+export class DIContainer {
+  private services = new Map&lt;string, any&gt;();
+
+  constructor() {
+    this.registerServices();
+  }
+
+  private registerServices(): void {
+    // ✅ Registra implementaciones concretas
+    this.services.set('IUserRepository', new InMemoryUserRepository());
+    this.services.set('IPasswordHasher', new BcryptPasswordHasher());
+    this.services.set('ITokenService', new JwtTokenService());
+    
+    // ✅ UserService recibe abstracciones
+    this.services.set('UserService', new UserService(
+      this.get('IUserRepository'),
+      this.get('IPasswordHasher'),
+      this.get('ITokenService')
+    ));
+  }
+}</code></pre>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa="arrow-up icon"></i>Beneficios del DIP:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ Bajo acoplamiento</li>
+                    <li>✅ Alta flexibilidad</li>
+                    <li>✅ Fácil testing (mocks)</li>
+                    <li>✅ Intercambiabilidad de implementaciones</li>
+                </ul>
+                <button class="demo-btn" onclick="showSection('cohesion')">Siguiente: Cohesión →</button>
+            </div>
+        </div>
+
+        <!-- Cohesión -->
+        <div id="cohesion" class="content-section">
+            <h2><i class="fas fa-link icon"></i>Alta Cohesión</h2>
+            <p><strong>"Los elementos de un módulo deben trabajar juntos hacia un objetivo común"</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-bullseye icon"></i>¿Qué es la Cohesión?</h3>
+                <p>La cohesión mide qué tan relacionadas están las responsabilidades dentro de un módulo. <span class="highlight">Alta cohesión = mejor diseño</span>.</p>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="check-circle icon"></i>✅ Ejemplo: Alta Cohesión en BcryptPasswordHasher</h4>
+            </div>
+
+            <div class="file-path">📁 src/services/PasswordHasher.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ Alta cohesión: Todo relacionado con hash de contraseñas
+export class BcryptPasswordHasher implements IPasswordHasher {
+  private readonly saltRounds: number;
+
+  constructor(saltRounds: number = 12) {
+    this.saltRounds = saltRounds;
+  }
+
+  // ✅ Cohesivo: Crear hash
+  async hash(password: string): Promise&lt;string&gt; {
+    this.validatePassword(password);
+    return bcrypt.hash(password, this.saltRounds);
+  }
+
+  // ✅ Cohesivo: Comparar hash
+  async compare(password: string, hash: string): Promise&lt;boolean&gt; {
+    this.validatePassword(password);
+    this.validateHash(hash);
+    return bcrypt.compare(password, hash);
+  }
+
+  // ✅ Cohesivo: Validación relacionada
+  private validatePassword(password: string): void {
+    if (!password || password.length < 6) {
+      throw new Error('La contraseña debe tener al menos 6 caracteres');
+    }
+  }
+
+  // ✅ Cohesivo: Validación relacionada
+  private validateHash(hash: string): void {
+    if (!hash || !hash.startsWith('$2b$')) {
+      throw new Error('Hash de contraseña inválido');
+    }
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="times icon"></i>❌ Ejemplo: Baja Cohesión (lo que NO hacer)</h4>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-typescript">// ❌ Baja cohesión: Responsabilidades no relacionadas
+class UserUtilities {
+  // Hash de contraseñas
+  hashPassword(password: string): string { /* ... */ }
+  
+  // Envío de emails (no relacionado)
+  sendEmail(to: string, subject: string): void { /* ... */ }
+  
+  // Validación de datos (no relacionado)
+  validateCreditCard(number: string): boolean { /* ... */ }
+  
+  // Cálculos matemáticos (no relacionado)
+  calculateTax(amount: number): number { /* ... */ }
+  
+  // Manejo de archivos (no relacionado)
+  uploadFile(file: Buffer): string { /* ... */ }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="lightbulb icon"></i>Más ejemplos de Alta Cohesión en el proyecto:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><code>JwtTokenService</code> - Solo operaciones con tokens JWT</li>
+                    <li><code>User</code> - Solo datos y validaciones de usuario</li>
+                    <li><code>UserController</code> - Solo manejo de requests HTTP de usuarios</li>
+                    <li><code>AuthMiddleware</code> - Solo autenticación y autorización</li>
+                </ul>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa="heart icon"></i>Beneficios de la Alta Cohesión:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ Código más fácil de entender</li>
+                    <li>✅ Más fácil de mantener</li>
+                    <li>✅ Mejor reutilización</li>
+                    <li>✅ Menos bugs</li>
+                    <li>✅ Testing más simple</li>
+                </ul>
+                <button class="demo-btn" onclick="showSection('coupling')">Siguiente: Acoplamiento →</button>
+            </div>
+        </div>
+
+        <!-- Acoplamiento -->
+        <div id="coupling" class="content-section">
+            <h2><i class="fas fa-unlink icon"></i>Bajo Acoplamiento</h2>
+            <p><strong>"Los módulos deben depender lo menos posible unos de otros"</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-chain-broken icon"></i>¿Qué es el Acoplamiento?</h3>
+                <p>El acoplamiento mide qué tan dependientes son los módulos entre sí. <span class="highlight">Bajo acoplamiento = mejor diseño</span>.</p>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="check-circle icon"></i>✅ Ejemplo: Bajo Acoplamiento con Interfaces</h4>
+            </div>
+
+            <div class="file-path">📁 src/controllers/UserController.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ Bajo acoplamiento: Solo depende del contenedor DI
+export class UserController {
+  private userService: UserService;
+
+  constructor() {
+    const container = DIContainer.getInstance();
+    // ✅ Obtiene dependencia del contenedor, no la crea directamente
+    this.userService = container.get&lt;UserService&gt;('UserService');
+  }
+
+  async register(req: Request, res: Response): Promise&lt;void&gt; {
+    try {
+      // ✅ Solo se comunica con UserService, no con repositorios directamente
+      const user = await this.userService.createUser(req.body);
+      
+      res.status(201).json({
+        success: true,
+        data: user.toPublicObject(),
+        message: 'Usuario creado exitosamente'
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error instanceof Error ? error.message : 'Error desconocido'
+      });
+    }
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="times icon"></i>❌ Ejemplo: Alto Acoplamiento (lo que NO hacer)</h4>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-typescript">// ❌ Alto acoplamiento: Dependencias directas y múltiples
+class BadUserController {
+  private userRepository: InMemoryUserRepository;     // ❌ Dependencia directa
+  private passwordHasher: BcryptPasswordHasher;       // ❌ Dependencia directa
+  private tokenService: JwtTokenService;              // ❌ Dependencia directa
+  private emailService: NodemailerEmailService;      // ❌ Dependencia directa
+  private logger: WinstonLogger;                      // ❌ Dependencia directa
+  private validator: JoiValidator;                    // ❌ Dependencia directa
+
+  constructor() {
+    // ❌ Crea todas las dependencias directamente
+    this.userRepository = new InMemoryUserRepository();
+    this.passwordHasher = new BcryptPasswordHasher();
+    this.tokenService = new JwtTokenService('secret', '24h');
+    this.emailService = new NodemailerEmailService(config);
+    this.logger = new WinstonLogger();
+    this.validator = new JoiValidator();
+  }
+
+  async register(req: Request, res: Response): Promise&lt;void&gt; {
+    // ❌ Lógica de negocio mezclada con lógica de presentación
+    const validation = this.validator.validate(req.body);
+    const hashedPassword = await this.passwordHasher.hash(req.body.password);
+    const user = await this.userRepository.create({...req.body, passwordHash: hashedPassword});
+    await this.emailService.sendWelcomeEmail(user.email);
+    this.logger.info(`User created: ${user.id}`);
+    res.json(user);
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="lightbulb icon"></i>Estrategias para Bajo Acoplamiento en el proyecto:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><strong>Inyección de Dependencias:</strong> <code>DIContainer</code> maneja todas las dependencias</li>
+                    <li><strong>Interfaces:</strong> Comunicación a través de contratos, no implementaciones</li>
+                    <li><strong>Capas separadas:</strong> Controller → Service → Repository</li>
+                    <li><strong>Middleware:</strong> Responsabilidades transversales separadas</li>
+                </ul>
+            </div>
+
+            <div class="file-path">📁 Arquitectura de Capas (Bajo Acoplamiento)</div>
+            <div class="code-example">
+                <pre><code class="language-text">┌─────────────────┐
+│   Controllers   │ ← Solo maneja HTTP requests/responses
+└─────────┬───────┘
+          │ (usa)
+┌─────────▼───────┐
+│    Services     │ ← Solo lógica de negocio
+└─────────┬───────┘
+          │ (usa)
+┌─────────▼───────┐
+│  Repositories   │ ← Solo persistencia de datos
+└─────────────────┘
+
+✅ Cada capa solo conoce la capa inmediatamente inferior
+✅ Comunicación a través de interfaces
+✅ Fácil de testear y modificar</code></pre>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa="thumbs-up icon"></i>Beneficios del Bajo Acoplamiento:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ Módulos independientes</li>
+                    <li>✅ Fácil testing (mocking)</li>
+                    <li>✅ Cambios localizados</li>
+                    <li>✅ Mejor reutilización</li>
+                    <li>✅ Desarrollo en paralelo</li>
+                </ul>
+                <button class="demo-btn" onclick="showSection('di')">Siguiente: Inyección DI →</button>
+            </div>
+        </div>
+
+        <!-- Inyección de Dependencias -->
+        <div id="di" class="content-section">
+            <h2><i class="fas fa-syringe icon"></i>Inyección de Dependencias (DI)</h2>
+            <p><strong>"No crees tus dependencias, que te las proporcionen"</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-magic icon"></i>¿Qué es la Inyección de Dependencias?</h3>
+                <p>Es un patrón donde las dependencias se proporcionan desde el exterior en lugar de crearlas internamente. Implementa el principio DIP.</p>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="check-circle icon"></i>Nuestro Contenedor DI</h4>
+            </div>
+
+            <div class="file-path">📁 src/container/DIContainer.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ Contenedor DI: Gestión centralizada de dependencias
+export class DIContainer {
+  private static instance: DIContainer;
+  private services = new Map&lt;string, any&gt;();
+
+  // ✅ Singleton: Una sola instancia del contenedor
+  static getInstance(): DIContainer {
+    if (!DIContainer.instance) {
+      DIContainer.instance = new DIContainer();
+    }
+    return DIContainer.instance;
+  }
+
+  constructor() {
+    this.registerServices();
+  }
+
+  // ✅ Registro de servicios: Configuración centralizada
+  private registerServices(): void {
+    // Servicios base
+    this.services.set('IUserRepository', new InMemoryUserRepository());
+    this.services.set('IPasswordHasher', new BcryptPasswordHasher());
+    this.services.set('ITokenService', new JwtTokenService(
+      process.env.JWT_SECRET || 'demo-secret-key',
+      process.env.JWT_EXPIRES_IN || '24h'
+    ));
+
+    // Servicios que dependen de otros servicios
+    this.services.set('UserService', new UserService(
+      this.get&lt;InMemoryUserRepository&gt;('IUserRepository'),
+      this.get&lt;IPasswordHasher&gt;('IPasswordHasher'),
+      this.get&lt;ITokenService&gt;('ITokenService')
+    ));
+  }
+
+  // ✅ Resolución de dependencias
+  get&lt;T&gt;(serviceName: string): T {
+    const service = this.services.get(serviceName);
+    if (!service) {
+      throw new Error(`Servicio no encontrado: ${serviceName}`);
+    }
+    return service;
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="lightbulb icon"></i>Tipos de Inyección de Dependencias:</h4>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-typescript">// 1. ✅ Constructor Injection (nuestro enfoque)
+class UserService {
+  constructor(
+    private userRepository: IUserRepository,  // ✅ Inyectado por constructor
+    private passwordHasher: IPasswordHasher   // ✅ Inyectado por constructor
+  ) {}
+}
+
+// 2. ✅ Property Injection
+class UserService {
+  @Inject('IUserRepository')
+  private userRepository: IUserRepository;
+}
+
+// 3. ✅ Method Injection
+class UserService {
+  setUserRepository(userRepository: IUserRepository): void {
+    this.userRepository = userRepository;
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="cogs icon"></i>Uso del Contenedor DI en la aplicación:</h4>
+            </div>
+
+            <div class="file-path">📁 src/controllers/UserController.ts</div>
+            <div class="code-example">
+                <pre><code class="language-typescript">export class UserController {
+  private userService: UserService;
+
+  constructor() {
+    // ✅ Obtiene dependencias del contenedor
+    const container = DIContainer.getInstance();
+    this.userService = container.get&lt;UserService&gt;('UserService');
+  }
+
+  // ✅ El controller no sabe cómo se crean las dependencias
+  async login(req: Request, res: Response): Promise&lt;void&gt; {
+    try {
+      const { email, password } = req.body;
+      const token = await this.userService.authenticateUser(email, password);
+      
+      res.json({
+        success: true,
+        data: { token },
+        message: 'Login exitoso'
+      });
+    } catch (error) {
+      res.status(401).json({
+        success: false,
+        message: error instanceof Error ? error.message : 'Error de autenticación'
+      });
+    }
+  }
+}</code></pre>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa="flask icon"></i>Beneficios para Testing:</h4>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-typescript">// ✅ Testing fácil con mocks
+describe('UserService', () => {
+  let userService: UserService;
+  let mockUserRepository: jest.Mocked&lt;IUserRepository&gt;;
+  let mockPasswordHasher: jest.Mocked&lt;IPasswordHasher&gt;;
+
+  beforeEach(() => {
+    // ✅ Creamos mocks de las dependencias
+    mockUserRepository = {
+      findByEmail: jest.fn(),
+      create: jest.fn(),
+      // ... otros métodos
+    };
+
+    mockPasswordHasher = {
+      hash: jest.fn(),
+      compare: jest.fn()
+    };
+
+    // ✅ Inyectamos los mocks
+    userService = new UserService(
+      mockUserRepository,
+      mockPasswordHasher,
+      mockTokenService
+    );
+  });
+
+  it('should create user successfully', async () => {
+    // ✅ Configuramos el comportamiento del mock
+    mockUserRepository.findByEmail.mockResolvedValue(null);
+    mockPasswordHasher.hash.mockResolvedValue('hashed-password');
+    
+    // ✅ Ejecutamos el test
+    const result = await userService.createUser(userData);
+    
+    // ✅ Verificamos las interacciones
+    expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(userData.email);
+    expect(mockPasswordHasher.hash).toHaveBeenCalledWith(userData.password);
+  });
+});</code></pre>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa="rocket icon"></i>Beneficios de la Inyección de Dependencias:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ <strong>Testabilidad:</strong> Fácil mocking de dependencias</li>
+                    <li>✅ <strong>Flexibilidad:</strong> Intercambio fácil de implementaciones</li>
+                    <li>✅ <strong>Configuración centralizada:</strong> Un solo lugar para configurar dependencias</li>
+                    <li>✅ <strong>Bajo acoplamiento:</strong> Clases no crean sus dependencias</li>
+                    <li>✅ <strong>Principio DIP:</strong> Dependencias de abstracciones</li>
+                </ul>
+                <button class="demo-btn" onclick="showSection('demo')">Siguiente: Demo API →</button>
+            </div>
+        </div>
+
+        <!-- Demo API -->
+        <div id="demo" class="content-section">
+            <h2><i class="fas fa-rocket icon"></i>Demostración de la API</h2>
+            <p><strong>Prueba los principios SOLID en acción</strong></p>
+
+            <div class="principle-card">
+                <h3><i class="fas fa-play icon"></i>API en Funcionamiento</h3>
+                <p>Nuestra API demuestra todos los principios SOLID trabajando juntos. Prueba los endpoints:</p>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-user-plus icon"></i>1. Registro de Usuario</h4>
+                <p>Demuestra: <span class="highlight">SRP, DIP, Inyección DI</span></p>
+                <button class="demo-btn" onclick="testRegister()">🔧 Probar Registro</button>
+                <div id="registerResult" class="api-result" style="display: none;"></div>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-sign-in-alt icon"></i>2. Login de Usuario</h4>
+                <p>Demuestra: <span class="highlight">ISP, LSP, Alta Cohesión</span></p>
+                <button class="demo-btn" onclick="testLogin()">🔑 Probar Login</button>
+                <div id="loginResult" class="api-result" style="display: none;"></div>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-user icon"></i>3. Obtener Perfil</h4>
+                <p>Demuestra: <span class="highlight">OCP, Bajo Acoplamiento</span></p>
+                <button class="demo-btn" onclick="testProfile()" id="profileBtn" disabled>👤 Obtener Perfil</button>
+                <div id="profileResult" class="api-result" style="display: none;"></div>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-users icon"></i>4. Listar Usuarios</h4>
+                <p>Demuestra: <span class="highlight">Todos los principios SOLID</span></p>
+                <button class="demo-btn" onclick="testUsers()" id="usersBtn" disabled>📋 Listar Usuarios</button>
+                <div id="usersResult" class="api-result" style="display: none;"></div>
+            </div>
+
+            <div class="demo-section">
+                <h4><i class="fas fa-chart-bar icon"></i>5. Estadísticas del Sistema</h4>
+                <p>Información sobre la arquitectura implementada</p>
+                <button class="demo-btn" onclick="testStats()">📊 Ver Estadísticas</button>
+                <div id="statsResult" class="api-result" style="display: none;"></div>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-info-circle icon"></i>Endpoints Disponibles:</h4>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><code>GET /health</code> - Health check</li>
+                    <li><code>GET /api</code> - Documentación de la API</li>
+                    <li><code>POST /api/users/register</code> - Registro de usuarios</li>
+                    <li><code>POST /api/users/login</code> - Autenticación</li>
+                    <li><code>GET /api/users/profile</code> - Perfil del usuario (requiere auth)</li>
+                    <li><code>PUT /api/users/profile</code> - Actualizar perfil (requiere auth)</li>
+                    <li><code>GET /api/users</code> - Listar usuarios (requiere auth)</li>
+                    <li><code>GET /api/stats</code> - Estadísticas del sistema</li>
+                </ul>
+            </div>
+
+            <div class="explanation">
+                <h4><i class="fas fa-graduation-cap icon"></i>¿Qué hemos aprendido?</h4>
+                <p>Este proyecto demuestra cómo los principios SOLID, cohesión, acoplamiento e inyección de dependencias trabajan juntos para crear:</p>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>✅ <strong>Código mantenible:</strong> Fácil de modificar y extender</li>
+                    <li>✅ <strong>Código testeable:</strong> Cada componente se puede probar independientemente</li>
+                    <li>✅ <strong>Código flexible:</strong> Fácil intercambio de implementaciones</li>
+                    <li>✅ <strong>Código escalable:</strong> Preparado para crecer</li>
+                    <li>✅ <strong>Código limpio:</strong> Fácil de entender y leer</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        let currentToken = '';
+        const sections = ['intro', 'srp', 'ocp', 'lsp', 'isp', 'dip', 'cohesion', 'coupling', 'di', 'demo'];
+        let currentSectionIndex = 0;
+
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+
+            // Actualizar navegación
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Actualizar progreso
+            currentSectionIndex = sections.indexOf(sectionId);
+            updateProgress();
+
+            // Resaltar código
+            Prism.highlightAll();
+        }
+
+        function updateProgress() {
+            const progress = ((currentSectionIndex + 1) / sections.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        async function testRegister() {
+            const resultDiv = document.getElementById('registerResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Registrando usuario...';
+
+            try {
+                const response = await fetch('/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'demo@example.com',
+                        name: 'Usuario Demo',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+
+                if (data.success) {
+                    resultDiv.style.background = '#d4edda';
+                    resultDiv.style.borderColor = '#c3e6cb';
+                } else {
+                    resultDiv.style.background = '#f8d7da';
+                    resultDiv.style.borderColor = '#f5c6cb';
+                }
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.borderColor = '#f5c6cb';
+            }
+        }
+
+        async function testLogin() {
+            const resultDiv = document.getElementById('loginResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Iniciando sesión...';
+
+            try {
+                const response = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'demo@example.com',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+
+                if (data.success && data.data.token) {
+                    currentToken = data.data.token;
+                    resultDiv.style.background = '#d4edda';
+                    resultDiv.style.borderColor = '#c3e6cb';
+                    
+                    // Habilitar botones que requieren autenticación
+                    document.getElementById('profileBtn').disabled = false;
+                    document.getElementById('usersBtn').disabled = false;
+                } else {
+                    resultDiv.style.background = '#f8d7da';
+                    resultDiv.style.borderColor = '#f5c6cb';
+                }
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.borderColor = '#f5c6cb';
+            }
+        }
+
+        async function testProfile() {
+            if (!currentToken) {
+                alert('Primero debes hacer login');
+                return;
+            }
+
+            const resultDiv = document.getElementById('profileResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Obteniendo perfil...';
+
+            try {
+                const response = await fetch('/api/users/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+
+                if (data.success) {
+                    resultDiv.style.background = '#d4edda';
+                    resultDiv.style.borderColor = '#c3e6cb';
+                } else {
+                    resultDiv.style.background = '#f8d7da';
+                    resultDiv.style.borderColor = '#f5c6cb';
+                }
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.borderColor = '#f5c6cb';
+            }
+        }
+
+        async function testUsers() {
+            if (!currentToken) {
+                alert('Primero debes hacer login');
+                return;
+            }
+
+            const resultDiv = document.getElementById('usersResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Obteniendo usuarios...';
+
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+
+                if (data.success) {
+                    resultDiv.style.background = '#d4edda';
+                    resultDiv.style.borderColor = '#c3e6cb';
+                } else {
+                    resultDiv.style.background = '#f8d7da';
+                    resultDiv.style.borderColor = '#f5c6cb';
+                }
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.borderColor = '#f5c6cb';
+            }
+        }
+
+        async function testStats() {
+            const resultDiv = document.getElementById('statsResult');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = 'Obteniendo estadísticas...';
+
+            try {
+                const response = await fetch('/api/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+
+                if (data.success) {
+                    resultDiv.style.background = '#d4edda';
+                    resultDiv.style.borderColor = '#c3e6cb';
+                } else {
+                    resultDiv.style.background = '#f8d7da';
+                    resultDiv.style.borderColor = '#f5c6cb';
+                }
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.borderColor = '#f5c6cb';
+            }
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            Prism.highlightAll();
+        });
+    </script>
+</body>
+</html>
+                },

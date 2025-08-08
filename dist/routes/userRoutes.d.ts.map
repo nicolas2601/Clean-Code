@@ -1,0 +1,1 @@
+{"version":3,"file":"userRoutes.d.ts","sourceRoot":"","sources":["../../src/routes/userRoutes.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,MAAM,EAAE,MAAM,SAAS,CAAC;AAIjC;;;;;;GAMG;AACH,qBAAa,UAAU;IACrB,OAAO,CAAC,MAAM,CAAS;IACvB,OAAO,CAAC,cAAc,CAAiB;IACvC,OAAO,CAAC,cAAc,CAAiB;;IASvC;;OAEG;IACH,OAAO,CAAC,WAAW;IAsCnB;;OAEG;IACI,SAAS,IAAI,MAAM;CAG3B"}
