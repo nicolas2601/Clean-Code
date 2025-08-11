@@ -21,6 +21,11 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Servir archivos estáticos
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
+// Servir favicon
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/favicon.ico'));
+});
+
 // Ruta raíz para servir el frontend
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
@@ -38,7 +43,7 @@ app.get('/health', (req, res) => {
 // Configurar rutas de la API
 const container = DIContainer.getInstance();
 const userRoutesInstance = new UserRoutes();
-app.use('/api', userRoutesInstance.getRouter());
+app.use('/api/users', userRoutesInstance.getRouter());
 
 // Estadísticas del sistema
 app.get('/api/stats', (req, res) => {
