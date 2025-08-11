@@ -4,10 +4,10 @@
   "description": "Demostración práctica de principios SOLID, cohesión/acoplamiento e inyección de dependencias",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "echo 'Build not needed for Vercel serverless'"
   },
   "keywords": ["SOLID", "POO", "TypeScript", "Express", "Clean Code"],
   "author": "Tu Agente Personal",

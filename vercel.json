@@ -18,5 +18,7 @@
     "api/index.ts": {
       "maxDuration": 30
     }
-  }
+  },
+  "installCommand": "npm install",
+  "buildCommand": "echo 'No build needed for serverless'"
 }
