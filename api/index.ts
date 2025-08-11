@@ -2,7 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import { userRoutes } from '../src/routes/userRoutes';
+import { UserRoutes } from '../src/routes/userRoutes';
 import { DIContainer } from '../src/container/DIContainer';
 
 // Crear la aplicación Express
@@ -36,12 +36,13 @@ app.get('/health', (req, res) => {
 });
 
 // Configurar rutas de la API
-const container = new DIContainer();
-app.use('/api', userRoutes(container));
+const container = DIContainer.getInstance();
+const userRoutesInstance = new UserRoutes();
+app.use('/api', userRoutesInstance.getRouter());
 
 // Estadísticas del sistema
 app.get('/api/stats', (req, res) => {
-  const userService = container.getUserService();
+  const userService = container.get<any>('UserService');
   const stats = {
     totalUsers: userService.getAllUsers().length,
     timestamp: new Date().toISOString(),
