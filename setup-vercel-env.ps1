@@ -39,3 +39,4 @@ Write-Host ""
 
 Write-Host "🎯 Variables configuradas exitosamente!" -ForegroundColor Green
 Write-Host "💜 Ahora ejecuta: vercel --prod" -ForegroundColor Magenta
+Write-Host "🌐 CORS configurado para: https://clean-code.vercel.app" -ForegroundColor Blue
